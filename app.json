@@ -1,7 +1,7 @@
 {
   "name": "Channel Bot",
   "description": "Telegram bot to automate and manage channels",
-  "logo": "https://telegra.ph/file/c54625bd6a4e08ffdb742.jpg",
+  "logo": "https://telegra.ph/file/25ed000941afb6d0561a1.jpg",
   "keywords": [
     "telegram",
     "bot",
@@ -25,7 +25,7 @@
          "plan": "heroku-postgresql"
       }
    ],
-  "repository": "https://github.com/CyniteOfficial/Auto-Channel-Bot",
+  "repository": "https://github.com/Sohanraz/nancy-queen-Bot",
   "env": {
     "ENVIRONMENT": {
       "description": "Don't change ANYTHING.",
