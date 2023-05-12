@@ -1,7 +1,7 @@
 # Nancy-Queen-Bot
 This Is A Bot For Giving Some Extra Features To Your Channel Like - Auto Caption, Sending Stickers After Posting Any Massage.
 
-# Channel Automation Bot [@CyniteChannelBot](https://t.me/CyniteChannelBot)
+# Channel Automation Bot [@Nancy_Queen_BotBot](https://t.me/Nancy_Queen_BotBot)
 
 > A star ⭐ from you means a lot to us!
 
