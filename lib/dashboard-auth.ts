@@ -19,14 +19,19 @@ export function createSessionValue() {
   return `${payload}.${sign(payload)}`;
 }
 
+function safeEqual(a: string, b: string) {
+  const left = Buffer.from(a);
+  const right = Buffer.from(b);
+  return left.length === right.length && crypto.timingSafeEqual(left, right);
+}
+
 function isValid(value?: string) {
   if (!value) return false;
   const [timestamp, signature] = value.split(".");
   if (!timestamp || !signature) return false;
   const age = Date.now() - Number(timestamp);
   if (!Number.isFinite(age) || age < 0 || age > MAX_AGE * 1000) return false;
-  const expected = sign(timestamp);
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+  return safeEqual(signature, sign(timestamp));
 }
 
 export async function isDashboardAuthenticated() {
@@ -52,5 +57,6 @@ export async function clearDashboardSession() {
 
 export function verifyDashboardPassword(password: string) {
   const expected = process.env.DASHBOARD_PASSWORD;
-  return Boolean(expected && password && crypto.timingSafeEqual(Buffer.from(password), Buffer.from(expected)));
+  if (!expected || !password) return false;
+  return safeEqual(password, expected);
 }
