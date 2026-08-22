@@ -37,11 +37,12 @@ export function installTelegramCompat() {
     return originalSendSticker(chatId, sticker, rest);
   };
 
-  bot.use(async (ctx, next) => {
-    const message: any = ctx.message;
+  const originalHandleUpdate = bot.handleUpdate.bind(bot);
+  (bot as any).handleUpdate = async (update: any, webhookReply?: any) => {
+    const message = update?.message;
     if (message?.entities?.some((entity: any) => entity.type === "bot_command" && entity.offset === 0)) {
       await incrementStat("commandsReceived");
     }
-    await next();
-  });
+    return originalHandleUpdate(update, webhookReply);
+  };
 }
