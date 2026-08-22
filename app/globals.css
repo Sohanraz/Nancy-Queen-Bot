@@ -37,6 +37,11 @@ button { cursor: pointer; }
 nav { padding-top: 20px; display: grid; gap: 6px; }
 .nav-item { display: flex; align-items: center; gap: 11px; color: #8d95a8; text-decoration: none; padding: 11px 12px; border-radius: 10px; font-size: 13px; }
 .nav-item.active, .nav-item:hover { color: #fff; background: rgba(139,92,246,.12); }
+.sidebar-live-stats { margin-top: 20px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,.025); }
+.sidebar-live-stats > .eyebrow { display: block; margin-bottom: 7px; }
+.sidebar-metric { display: flex; align-items: center; gap: 8px; padding: 7px 0; color: #aeb6c8; font-size: 11px; }
+.sidebar-metric .metric-icon { width: 24px; height: 24px; border-radius: 8px; }
+.sidebar-metric strong { margin-left: auto; color: #fff; font-size: 11px; }
 .sidebar-bottom { margin-top: auto; display: grid; gap: 10px; }
 .side-status { padding: 12px; display: flex; gap: 10px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,.025); }
 .side-status strong, .side-status span { display: block; }
