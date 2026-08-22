@@ -90,6 +90,16 @@ export default function DashboardClient() {
           <a className="nav-item"><MessageSquare size={17} /> Activity</a>
         </nav>
 
+        {stats && <div className="sidebar-live-stats">
+          <span className="eyebrow">LIVE STATS</span>
+          <SidebarMetric icon={<Users size={14} />} label="Users" value={stats.users} />
+          <SidebarMetric icon={<Radio size={14} />} label="Channels" value={stats.channels} />
+          <SidebarMetric icon={<Activity size={14} />} label="Processed" value={stats.postsProcessed} />
+          <SidebarMetric icon={<CheckCircle2 size={14} />} label="Modified" value={stats.postsModified} />
+          <SidebarMetric icon={<Radio size={14} />} label="Stickers" value={stats.stickersSent} />
+          <SidebarMetric icon={<ShieldCheck size={14} />} label="Errors" value={stats.errors} />
+        </div>}
+
         <div className="sidebar-bottom">
           <div className="side-status">
             <span className={stats?.dbConnected ? "dot online" : "dot"}></span>
@@ -154,6 +164,10 @@ export default function DashboardClient() {
       </main>
     </div>
   );
+}
+
+function SidebarMetric({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
+  return <div className="sidebar-metric"><span className="metric-icon">{icon}</span><span>{label}</span><strong>{number(value)}</strong></div>;
 }
 
 function Metric({ icon, label, value, raw = false }: { icon: React.ReactNode; label: string; value: number | string; raw?: boolean }) {
