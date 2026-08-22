@@ -1,9 +1,12 @@
 import { NextRequest } from "next/server";
 import { bot, processUpdate } from "@/lib/telegram";
+import { installTelegramCompat } from "@/lib/telegram-compat";
 import { initDb } from "@/lib/db";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
+
+installTelegramCompat();
 
 async function enforceMustJoin(update: any) {
   const required = process.env.MUST_JOIN?.replace(/^@/, "").trim();
@@ -28,7 +31,7 @@ async function enforceMustJoin(update: any) {
       "You must join <b>the required channel</b> to use me. After joining, try again!",
       {
         parse_mode: "HTML",
-        disable_web_page_preview: true,
+        link_preview_options: { is_disabled: true },
         reply_markup: link ? { inline_keyboard: [[{ text: "✨ Join Channel ✨", url: link }]] } : undefined,
       },
     );
