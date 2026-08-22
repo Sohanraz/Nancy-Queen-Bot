@@ -1,63 +1,64 @@
-# Nancy-Queen-Bot
-This Is A Bot For Giving Some Extra Features To Your Channel Like - Auto Caption, Sending Stickers After Posting Any Massage.
+# Nancy Queen Bot
 
-# Channel Automation Bot [@Nancy_Queen_BotBot](https://t.me/Nancy_Queen_BotBot)
+Nancy Queen is a Telegram channel automation bot rebuilt for **Vercel + MongoDB**. The original channel-management features are preserved while the long-running Pyrogram process and PostgreSQL/SQLAlchemy database have been replaced with webhook-based Telegram Bot API handlers and MongoDB persistence.
 
-> A star ⭐ from you means a lot to us!
+## Features
 
-<p align="center"><a href="https://github.com/SohanRaz/Nancy-Queen-Bot"><img src="https://telegra.ph/file/25ed000941afb6d0561a1.jpg" width="2000"></a></p>
+- Add and manage Telegram channels from private chat
+- Automatically add captions to channel posts
+- Caption placement: below, above, or replace
+- Automatically add URL buttons
+- Automatically send a sticker after a post
+- Edit mode: media only or all posts
+- Webpage preview toggle
+- Optional mandatory-join channel gate
+- `/start`, `/help`, `/about`, `/channels`, `/add`, `/report`, `/cancel`, and admin-only `/stats`
+- MongoDB-backed user, channel, conversation, and usage statistics
+- Protected web dashboard with live sidebar statistics
 
-Telegram bot to automate and manage channels.
+## Vercel deployment
 
-[![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+1. Import this repository into Vercel.
+2. Add the environment variables below to the **Production** environment.
+3. Deploy the project.
+4. Open `https://YOUR-DOMAIN/api/telegram/setup?secret=YOUR_BOT_SETUP_SECRET` once after deployment. This sets the Telegram webhook and bot commands.
+5. Open `https://YOUR-DOMAIN/` to use the dashboard.
 
-## Usage
+The setup URL uses your production `NEXT_PUBLIC_APP_URL`. Keep `BOT_SETUP_SECRET` private.
 
-### Deploy to Heroku
+## Environment variables
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/sohanraz/nancy-queen-Bot)
+```env
+BOT_TOKEN=
+MONGODB_URI=
+MONGODB_DB=nancy_queen
 
-1. Tap on above button and fill `API_ID`, `API_HASH`, `BOT_TOKEN` (and `MUST_JOIN`).
-2. Then tap "Deploy App" below it. Wait till deploying is complete (will take atmost 2 minutes).
-3. After deploying is complete, tap on "Manage App"
-4. Check the logs to see if your bot is ready!
+# Optional mandatory-join channel/group. Example: @Purohit_bots
+MUST_JOIN=
 
+# Telegram user ID allowed to use /stats
+ADMIN_USER_ID=
 
-#### Mandatory Vars
+# Telegram webhook verification
+TELEGRAM_WEBHOOK_SECRET=
 
-- `API_ID` - Get this from [my.telegram.org](https://my.telegram.org/auth)
-- `API_HASH` - Get this from [my.telegram.org](https://my.telegram.org/auth)
-- `BOT_TOKEN` - Get this from [@BotFather](https://t.me/BotFather)
-- `DATABASE_URL` - Will be automatically added by Heroku.
-- `MUST_JOIN` - Username/ID of your telegram channel/group.
+# Secret required by /api/telegram/setup
+BOT_SETUP_SECRET=
+NEXT_PUBLIC_APP_URL=https://your-production-domain.vercel.app
 
-## Functions
+# Dashboard login
+DASHBOARD_PASSWORD=
+DASHBOARD_SESSION_SECRET=
+```
 
-1) Automatically add caption
-2) Automatically post sticker after every message.
-3) Add URL buttons to every message.
-4) Various settings like Edit Mode, Caption Mode and Webpage Preview
+## MongoDB
 
+Use a MongoDB Atlas cluster or another MongoDB-compatible deployment. The application creates indexes for users, channels, sessions, and the statistics document automatically on first request.
 
-## Credits
+## Dashboard
 
-- [Dan Tès](https://github.com/delivrance) for his [Pyrogram](https://docs.pyrogram.org) Library
-- [The Legend](https://github.com/thelegend-16) for the idea as well as the project logo.
+The root page (`/`) provides a protected dashboard with live statistics for users, managed channels, posts processed, posts modified, captions applied, buttons applied, stickers sent, commands, channel changes, errors, and MongoDB connection status.
 
-## Support
+## Branding
 
-Channel :- [@Developerr_Bota](https://t.me/Developerr_Bots)
-
-Contact Me :- [@Developerr_Bots](https://t.me/Developerr_bots_support)
-
-## :)
-CREDITS :- STARK BOTS
-
-[![ForTheBadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
-
-[![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/Sohanraz/nancy-queen-Bot)
-
-[![ForTheBadge makes-people-smile](http://ForTheBadge.com/images/badges/makes-people-smile.svg)](https://github.com/Sohanraz/nancy-queen-Bot)
-
-
-
+All old `@Developerr_Bots` references have been removed from the rebuilt application and replaced with **@Purohit_bots**.
