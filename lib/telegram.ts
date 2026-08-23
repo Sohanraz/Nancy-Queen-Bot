@@ -1,4 +1,5 @@
-import { Bot, Context, InlineKeyboard, Keyboard, Update } from "grammy";
+import { Bot, Context, InlineKeyboard, Keyboard } from "grammy";
+import type { Update } from "grammy/types";
 import {
   clearSession,
   getChannel,
