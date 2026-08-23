@@ -21,10 +21,10 @@ Nancy Queen is a Telegram channel automation bot rebuilt for **Vercel + MongoDB*
 1. Import this repository into Vercel.
 2. Add the environment variables below to the **Production** environment.
 3. Deploy the project.
-4. Open `https://YOUR-DOMAIN/api/telegram/setup?secret=YOUR_BOT_SETUP_SECRET` once after deployment. This sets the Telegram webhook and bot commands.
+4. Send a `POST` request to `https://YOUR-DOMAIN/api/telegram/setup` once after deployment with the `x-bot-setup-secret: YOUR_BOT_SETUP_SECRET` header. This sets the Telegram webhook and bot commands.
 5. Open `https://YOUR-DOMAIN/` to use the dashboard.
 
-The setup URL uses your production `NEXT_PUBLIC_APP_URL`. Keep `BOT_SETUP_SECRET` private.
+The setup endpoint uses your production `NEXT_PUBLIC_APP_URL`. Keep `BOT_SETUP_SECRET` private and send it only in the request header.
 
 ## Environment variables
 
