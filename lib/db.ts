@@ -34,6 +34,13 @@ export interface SessionDoc {
   expiresAt: Date;
 }
 
+interface StatsDoc {
+  _id: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  [key: string]: unknown;
+}
+
 const counters = [
   "messagesReceived",
   "postsProcessed",
@@ -54,13 +61,14 @@ let initDbPromise: Promise<void> | undefined;
 export function initDb() {
   initDbPromise ??= (async () => {
     const db = await getDb();
+    const stats = db.collection<StatsDoc>("stats");
     await Promise.all([
       db.collection<UserDoc>("users").createIndex({ userId: 1 }, { unique: true }),
       db.collection<ChannelDoc>("channels").createIndex({ channelId: 1 }, { unique: true }),
       db.collection<ChannelDoc>("channels").createIndex({ adminId: 1 }),
       db.collection<SessionDoc>("sessions").createIndex({ userId: 1 }, { unique: true }),
       db.collection<SessionDoc>("sessions").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }),
-      db.collection("stats").updateOne(
+      stats.updateOne(
         { _id: "global" },
         { $setOnInsert: { _id: "global", createdAt: new Date() } },
         { upsert: true },
@@ -140,8 +148,8 @@ export async function updateChannel(channelId: number, patch: Partial<ChannelDoc
 export async function removeChannel(channelId: number) {
   const db = await getDb();
   await Promise.all([
-    db.collection("channels").deleteOne({ channelId }),
-    db.collection("users").updateMany({}, { $pull: { channels: channelId } }),
+    db.collection<ChannelDoc>("channels").deleteOne({ channelId }),
+    db.collection<UserDoc>("users").updateMany({}, { $pull: { channels: channelId } }),
   ]);
 }
 
@@ -172,7 +180,7 @@ export async function clearSession(userId: number) {
 
 export async function incrementStat(name: CounterName, value = 1) {
   const db = await getDb();
-  await db.collection("stats").updateOne(
+  await db.collection<StatsDoc>("stats").updateOne(
     { _id: "global" },
     { $inc: { [name]: value }, $set: { updatedAt: new Date() } },
     { upsert: true },
@@ -184,7 +192,7 @@ export async function getDashboardStats() {
   const [users, channels, statDoc] = await Promise.all([
     db.collection<UserDoc>("users").countDocuments(),
     db.collection<ChannelDoc>("channels").countDocuments(),
-    db.collection("stats").findOne({ _id: "global" }),
+    db.collection<StatsDoc>("stats").findOne({ _id: "global" }),
   ]);
 
   return {
