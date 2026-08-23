@@ -182,7 +182,7 @@ export async function incrementStat(name: CounterName, value = 1) {
   const db = await getDb();
   await db.collection<StatsDoc>("stats").updateOne(
     { _id: "global" },
-    { $inc: { [name]: value }, $set: { updatedAt: new Date() } },
+    { $inc: { [name]: value } as any, $set: { updatedAt: new Date() } },
     { upsert: true },
   );
 }
