@@ -420,9 +420,9 @@ async function applyChannelPost(ctx: Context) {
   let content: string | null = null;
   if (channel.caption) {
     const original = hasText ? messageTextToHtml(message) : "";
-    if (channel.position === "above") content = original ? `${channel.caption}<br><br>${original}` : channel.caption;
+    if (channel.position === "above") content = original ? `${channel.caption}\n\n${original}` : channel.caption;
     else if (channel.position === "replace") content = channel.caption;
-    else content = original ? `${original}<br><br>${channel.caption}` : channel.caption;
+    else content = original ? `${original}\n\n${channel.caption}` : channel.caption;
   }
 
   const replyMarkup = channel.buttons ? parseButtons(channel.buttons) : undefined;
@@ -435,11 +435,9 @@ async function applyChannelPost(ctx: Context) {
           caption: content,
           parse_mode: "HTML",
           reply_markup: replyMarkup,
-          link_preview_options: linkPreviewOptions,
         });
       } else {
-        await ctx.api.editMessageText(message.chat.id, message.message_id, {
-          text: content,
+        await ctx.api.editMessageText(message.chat.id, message.message_id, content, {
           parse_mode: "HTML",
           reply_markup: replyMarkup,
           link_preview_options: linkPreviewOptions,
@@ -452,11 +450,7 @@ async function applyChannelPost(ctx: Context) {
         reply_markup: replyMarkup,
       });
     } else if (replyMarkup && (message.text || message.caption)) {
-      if (message.caption !== undefined) {
-        await ctx.api.editMessageCaption(message.chat.id, message.message_id, { reply_markup: replyMarkup });
-      } else {
-        await ctx.api.editMessageText(message.chat.id, message.message_id, { reply_markup: replyMarkup });
-      }
+      await ctx.api.editMessageReplyMarkup(message.chat.id, message.message_id, { reply_markup: replyMarkup });
     }
 
     if (channel.stickerId) {
@@ -464,7 +458,8 @@ async function applyChannelPost(ctx: Context) {
       await incrementStat("stickersSent");
     }
     if (content) await incrementStat("postsModified");
-  } catch {
+  } catch (error) {
+    console.error("Unable to apply channel post settings", error);
     await incrementStat("errors");
   }
 }
@@ -634,13 +629,25 @@ bot.on("channel_post", async (ctx) => {
   await applyChannelPost(ctx);
 });
 
+let botInitPromise: Promise<void> | undefined;
+
+async function ensureBotInitialized() {
+  botInitPromise ??= bot.init().catch((error) => {
+    botInitPromise = undefined;
+    throw error;
+  });
+  return botInitPromise;
+}
+
 export async function processUpdate(update: Update) {
+  await ensureBotInitialized();
   await bot.handleUpdate(update);
 }
 
 export async function configureBot(baseUrl: string) {
   const webhookUrl = `${baseUrl.replace(/\/$/, "")}/api/telegram/webhook`;
   const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
+  if (!secret) throw new Error("TELEGRAM_WEBHOOK_SECRET is not configured");
   await bot.api.setWebhook(webhookUrl, {
     secret_token: secret,
     allowed_updates: ["message", "callback_query", "channel_post", "edited_channel_post"],
