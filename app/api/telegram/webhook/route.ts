@@ -44,10 +44,9 @@ async function enforceMustJoin(update: any) {
 
 export async function POST(request: NextRequest) {
   const expected = process.env.TELEGRAM_WEBHOOK_SECRET;
-  if (expected) {
-    const supplied = request.headers.get("x-telegram-bot-api-secret-token");
-    if (supplied !== expected) return Response.json({ ok: false }, { status: 401 });
-  }
+  if (!expected) return Response.json({ ok: false, error: "TELEGRAM_WEBHOOK_SECRET is not configured" }, { status: 500 });
+  const supplied = request.headers.get("x-telegram-bot-api-secret-token");
+  if (supplied !== expected) return Response.json({ ok: false }, { status: 401 });
 
   try {
     await initDb();
