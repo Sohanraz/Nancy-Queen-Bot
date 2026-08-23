@@ -64,7 +64,11 @@ export default function DashboardClient() {
   }, [load]);
 
   async function logout() {
-    await fetch("/api/dashboard/logout", { method: "POST" });
+    const response = await fetch("/api/dashboard/logout", { method: "POST" });
+    if (!response.ok) {
+      setError("Unable to sign out. Please try again.");
+      return;
+    }
     window.location.reload();
   }
 
