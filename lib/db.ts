@@ -49,20 +49,28 @@ const counters = [
 
 export type CounterName = (typeof counters)[number];
 
-export async function initDb() {
-  const db = await getDb();
-  await Promise.all([
-    db.collection<UserDoc>("users").createIndex({ userId: 1 }, { unique: true }),
-    db.collection<ChannelDoc>("channels").createIndex({ channelId: 1 }, { unique: true }),
-    db.collection<ChannelDoc>("channels").createIndex({ adminId: 1 }),
-    db.collection<SessionDoc>("sessions").createIndex({ userId: 1 }, { unique: true }),
-    db.collection<SessionDoc>("sessions").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }),
-    db.collection("stats").updateOne(
-      { _id: "global" },
-      { $setOnInsert: { _id: "global", createdAt: new Date() } },
-      { upsert: true },
-    ),
-  ]);
+let initDbPromise: Promise<void> | undefined;
+
+export function initDb() {
+  initDbPromise ??= (async () => {
+    const db = await getDb();
+    await Promise.all([
+      db.collection<UserDoc>("users").createIndex({ userId: 1 }, { unique: true }),
+      db.collection<ChannelDoc>("channels").createIndex({ channelId: 1 }, { unique: true }),
+      db.collection<ChannelDoc>("channels").createIndex({ adminId: 1 }),
+      db.collection<SessionDoc>("sessions").createIndex({ userId: 1 }, { unique: true }),
+      db.collection<SessionDoc>("sessions").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }),
+      db.collection("stats").updateOne(
+        { _id: "global" },
+        { $setOnInsert: { _id: "global", createdAt: new Date() } },
+        { upsert: true },
+      ),
+    ]);
+  })().catch((error) => {
+    initDbPromise = undefined;
+    throw error;
+  });
+  return initDbPromise;
 }
 
 export async function ensureUser(userId: number, profile?: Partial<Pick<UserDoc, "firstName" | "lastName" | "username">>) {
