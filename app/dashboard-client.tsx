@@ -8,7 +8,6 @@ import {
   Database,
   Gauge,
   Hash,
-  LogOut,
   MessageSquare,
   Radio,
   Send,
@@ -45,10 +44,6 @@ export default function DashboardClient() {
   const load = useCallback(async () => {
     try {
       const response = await fetch("/api/dashboard/stats", { cache: "no-store" });
-      if (response.status === 401) {
-        window.location.reload();
-        return;
-      }
       if (!response.ok) throw new Error("Unable to load stats");
       setStats(await response.json());
       setError("");
@@ -62,15 +57,6 @@ export default function DashboardClient() {
     const timer = window.setInterval(() => void load(), 10000);
     return () => window.clearInterval(timer);
   }, [load]);
-
-  async function logout() {
-    const response = await fetch("/api/dashboard/logout", { method: "POST" });
-    if (!response.ok) {
-      setError("Unable to sign out. Please try again.");
-      return;
-    }
-    window.location.reload();
-  }
 
   const cards = stats ? [
     { label: "Total Users", value: number(stats.users), icon: Users, tone: "violet" },
@@ -109,7 +95,6 @@ export default function DashboardClient() {
             <span className={stats?.dbConnected ? "dot online" : "dot"}></span>
             <div><strong>{stats?.dbConnected ? "MongoDB connected" : "MongoDB offline"}</strong><span>{stats?.updatedAt ? `Updated ${new Date(stats.updatedAt).toLocaleTimeString()}` : "Waiting for data"}</span></div>
           </div>
-          <button className="logout-button" onClick={logout}><LogOut size={16} /> Sign out</button>
         </div>
       </aside>
 
@@ -122,7 +107,7 @@ export default function DashboardClient() {
           </div>
           <div className="topbar-actions">
             <span className="live-pill"><span className="dot online"></span> Live</span>
-            <div className="admin-pill"><ShieldCheck size={16} /> Admin</div>
+            <div className="admin-pill"><ShieldCheck size={16} /> Public dashboard</div>
           </div>
         </header>
 
