@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BOT_TOKEN: test-token
+      MONGODB_URI: mongodb://localhost:27017
+      TELEGRAM_WEBHOOK_SECRET: test-webhook-secret
+      BOT_SETUP_SECRET: test-setup-secret
+      DASHBOARD_PASSWORD: test-password
+      DASHBOARD_SESSION_SECRET: test-session-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.9.0
+          cache: npm
+      - run: npm install
+      - run: npm run typecheck
+      - run: npm run build
