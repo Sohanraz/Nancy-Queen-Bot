@@ -14,16 +14,20 @@ type GlobalMongo = typeof globalThis & {
 
 const globalMongo = globalThis as GlobalMongo;
 
-const clientPromise =
-  globalMongo.__nancyMongoPromise ??
-  (globalMongo.__nancyMongoPromise = new MongoClient(uri, {
+function connect(): Promise<MongoClient> {
+  globalMongo.__nancyMongoPromise ??= new MongoClient(uri, {
     maxPoolSize: 10,
     minPoolSize: 0,
     serverSelectionTimeoutMS: 8000,
-  }).connect());
+  }).connect().catch((error) => {
+    globalMongo.__nancyMongoPromise = undefined;
+    throw error;
+  });
+  return globalMongo.__nancyMongoPromise;
+}
 
 export async function getDb(): Promise<Db> {
-  const client = await clientPromise;
+  const client = await connect();
   globalMongo.__nancyMongoClient = client;
   return client.db(dbName);
 }
