@@ -14,8 +14,6 @@ jobs:
       MONGODB_URI: mongodb://localhost:27017
       TELEGRAM_WEBHOOK_SECRET: test-webhook-secret
       BOT_SETUP_SECRET: test-setup-secret
-      DASHBOARD_PASSWORD: test-password
-      DASHBOARD_SESSION_SECRET: test-session-secret
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
