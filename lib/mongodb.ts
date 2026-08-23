@@ -6,6 +6,7 @@ const dbName = process.env.MONGODB_DB || "nancy_queen";
 if (!uri) {
   throw new Error("MONGODB_URI is not configured");
 }
+const mongoUri: string = uri;
 
 type GlobalMongo = typeof globalThis & {
   __nancyMongoClient?: MongoClient;
@@ -15,7 +16,7 @@ type GlobalMongo = typeof globalThis & {
 const globalMongo = globalThis as GlobalMongo;
 
 function connect(): Promise<MongoClient> {
-  globalMongo.__nancyMongoPromise ??= new MongoClient(uri, {
+  globalMongo.__nancyMongoPromise ??= new MongoClient(mongoUri, {
     maxPoolSize: 10,
     minPoolSize: 0,
     serverSelectionTimeoutMS: 8000,
