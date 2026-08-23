@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   const setupSecret = process.env.BOT_SETUP_SECRET;
   if (!setupSecret) return Response.json({ error: "BOT_SETUP_SECRET is not configured" }, { status: 500 });
 
-  const supplied = request.headers.get("x-bot-setup-secret") || new URL(request.url).searchParams.get("secret");
+  const supplied = request.headers.get("x-bot-setup-secret");
   if (supplied !== setupSecret) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
@@ -20,6 +20,3 @@ export async function POST(request: NextRequest) {
   return Response.json({ ok: true, webhookUrl });
 }
 
-export async function GET(request: NextRequest) {
-  return POST(request);
-}
