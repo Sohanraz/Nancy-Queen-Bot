@@ -14,7 +14,7 @@ Nancy Queen is a Telegram channel automation bot rebuilt for **Vercel + MongoDB*
 - Optional mandatory-join channel gate
 - `/start`, `/help`, `/about`, `/channels`, `/add`, `/report`, `/cancel`, and admin-only `/stats`
 - MongoDB-backed user, channel, conversation, and usage statistics
-- Protected web dashboard with live sidebar statistics
+- Public web dashboard with live sidebar statistics
 
 ## Vercel deployment
 
@@ -46,9 +46,8 @@ TELEGRAM_WEBHOOK_SECRET=
 BOT_SETUP_SECRET=
 NEXT_PUBLIC_APP_URL=https://your-production-domain.vercel.app
 
-# Dashboard login
-DASHBOARD_PASSWORD=
-DASHBOARD_SESSION_SECRET=
+# Public dashboard
+# No dashboard login or session secret is required.
 ```
 
 ## MongoDB
@@ -57,7 +56,7 @@ Use a MongoDB Atlas cluster or another MongoDB-compatible deployment. The applic
 
 ## Dashboard
 
-The root page (`/`) provides a protected dashboard with live statistics for users, managed channels, posts processed, posts modified, captions applied, buttons applied, stickers sent, commands, channel changes, errors, and MongoDB connection status.
+The root page (`/`) provides a public dashboard with live statistics for users, managed channels, posts processed, posts modified, captions applied, buttons applied, stickers sent, commands, channel changes, errors, and MongoDB connection status.
 
 ## Branding
 
